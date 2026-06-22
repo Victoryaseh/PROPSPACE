@@ -15,27 +15,27 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16">
           <Link to="/" className="flex items-center gap-2">
-            <span className="text-2xl font-bold text-blue-600">PropSpace</span>
+            <span className="text-2xl font-bold text-purple-600">PropSpace</span>
           </Link>
 
           <div className="flex items-center gap-4">
-            <Link to="/" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+            <Link to="/" className="text-sm font-medium text-gray-600 hover:text-purple-600 transition-colors">
               Browse
             </Link>
             {isAuthenticated ? (
               <>
-                <Link to="/dashboard" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+                <Link to="/dashboard" className="text-sm font-medium text-gray-600 hover:text-purple-600 transition-colors">
                   Dashboard
                 </Link>
                 <Link to="/listings/new" className="btn-primary text-sm">
                   + List Property
                 </Link>
                 <div className="relative group">
-                  <button className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-blue-600">
+                  <button className="flex items-center gap-2 text-sm font-medium text-gray-700 hover:text-purple-600">
                     {user?.avatar ? (
                       <img src={user.avatar} alt="avatar" className="w-8 h-8 rounded-full object-cover" />
                     ) : (
-                      <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-semibold text-sm">
+                      <div className="w-8 h-8 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center font-semibold text-sm">
                         {(user?.username || 'U')[0].toUpperCase()}
                       </div>
                     )}
@@ -56,7 +56,7 @@ const Navbar = () => {
               </>
             ) : (
               <>
-                <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-blue-600 transition-colors">
+                <Link to="/login" className="text-sm font-medium text-gray-600 hover:text-purple-600 transition-colors">
                   Login
                 </Link>
                 <Link to="/register" className="btn-primary text-sm">

@@ -5,7 +5,7 @@ const PLACEHOLDER = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w
 
 const badge = {
   rent: 'bg-green-100 text-green-700',
-  sale: 'bg-blue-100 text-blue-700',
+  sale: 'bg-purple-100 text-purple-700',
 };
 
 const PropertyCard = ({ property }) => {
@@ -30,8 +30,8 @@ const PropertyCard = ({ property }) => {
       <div className="p-4">
         <h3 className="font-semibold text-gray-900 truncate">{property.title}</h3>
         <p className="text-sm text-gray-500 mt-1">{property.city}, {property.country}</p>
-        <p className="text-blue-600 font-bold mt-2 text-lg">
-          {formatPrice(property.price, property.currency)}
+        <p className="text-purple-600 font-bold mt-2 text-lg">
+          {formatPrice(property.price)}
           {property.listingType === 'rent' && <span className="text-gray-400 text-sm font-normal">/mo</span>}
         </p>
       </div>

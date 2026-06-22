@@ -57,7 +57,7 @@ const PropertyDetailPage = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <Link to="/" className="text-blue-600 hover:underline text-sm mb-4 block">&larr; Back to listings</Link>
+      <Link to="/" className="text-purple-600 hover:underline text-sm mb-4 block">&larr; Back to listings</Link>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
         <img
@@ -82,7 +82,7 @@ const PropertyDetailPage = () => {
               <p className="text-gray-500 mt-1">{property.city}, {property.country}</p>
             </div>
             <div className="text-right">
-              <p className="text-2xl font-bold text-blue-600">
+              <p className="text-2xl font-bold text-purple-600">
                 {formatPrice(property.price, property.currency)}
                 {property.listingType === 'rent' && <span className="text-base text-gray-400 font-normal">/mo</span>}
               </p>
@@ -109,7 +109,7 @@ const PropertyDetailPage = () => {
               {property.author?.avatar ? (
                 <img src={property.author.avatar} alt="avatar" className="w-10 h-10 rounded-full object-cover" />
               ) : (
-                <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
+                <div className="w-10 h-10 rounded-full bg-blue-100 text-purple-600 flex items-center justify-center font-bold">
                   {(property.author?.username || 'U')[0].toUpperCase()}
                 </div>
               )}

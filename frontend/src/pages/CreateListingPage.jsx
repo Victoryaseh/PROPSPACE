@@ -1,32 +1,15 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useForm, useWatch } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import api from '../api/axiosInstance';
 import InputField from '../components/InputField';
 
-const CITIES = {
-  Cameroon: ['Douala', 'Yaoundé', 'Bafoussam', 'Kribi', 'Dschang', 'Limbe', 'Buea', 'Ngaoundéré', 'Bamenda', 'Garoua'],
-  France: ['Paris', 'Lyon', 'Marseille', 'Nice', 'Bordeaux', 'Aix-en-Provence', 'Toulouse', 'Strasbourg', 'Nantes', 'Lille'],
-};
-
-const DEFAULT_CURRENCY = { Cameroon: 'XAF', France: 'EUR' };
+const CAMEROON_CITIES = ['Douala', 'Yaoundé', 'Bafoussam', 'Kribi', 'Dschang', 'Limbe', 'Buea', 'Ngaoundéré', 'Bamenda', 'Garoua'];
 
 const CreateListingPage = () => {
   const navigate = useNavigate();
   const [serverError, setServerError] = useState('');
-  const { register, handleSubmit, control, setValue, formState: { errors, isSubmitting } } = useForm({
-    defaultValues: { country: 'Cameroon', currency: 'XAF' },
-  });
-
-  const country = useWatch({ control, name: 'country' });
-  const cities = CITIES[country] || [];
-
-  const handleCountryChange = (e) => {
-    const val = e.target.value;
-    setValue('country', val);
-    setValue('city', '');
-    setValue('currency', DEFAULT_CURRENCY[val] || 'XAF');
-  };
+  const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
 
   const onSubmit = async (data) => {
     setServerError('');
@@ -34,6 +17,8 @@ const CreateListingPage = () => {
       const payload = {
         ...data,
         price: Number(data.price),
+        currency: 'XAF',
+        country: 'Cameroon',
         images: data.images ? data.images.split('\n').map((u) => u.trim()).filter(Boolean) : [],
       };
       const { data: property } = await api.post('/properties', payload);
@@ -77,46 +62,12 @@ const CreateListingPage = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="form-label">Country *</label>
-              <select
-                className="input-field"
-                {...register('country', { required: 'Country is required' })}
-                onChange={handleCountryChange}
-              >
-                <option value="Cameroon">Cameroon</option>
-                <option value="France">France</option>
-              </select>
-              {errors.country && <p className="form-error">{errors.country.message}</p>}
-            </div>
-            <div>
               <label className="form-label">City *</label>
               <select className="input-field" {...register('city', { required: 'City is required' })}>
                 <option value="">Select city...</option>
-                {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+                {CAMEROON_CITIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
               {errors.city && <p className="form-error">{errors.city.message}</p>}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-3 gap-4">
-            <InputField
-              label="Price *"
-              type="number"
-              min="0"
-              placeholder="250000"
-              error={errors.price?.message}
-              {...register('price', {
-                required: 'Price is required',
-                min: { value: 0, message: 'Must be positive' },
-              })}
-            />
-            <div>
-              <label className="form-label">Currency *</label>
-              <select className="input-field" {...register('currency', { required: true })}>
-                <option value="XAF">XAF (CFA)</option>
-                <option value="EUR">EUR (€)</option>
-                <option value="USD">USD ($)</option>
-              </select>
             </div>
             <div>
               <label className="form-label">Listing Type *</label>
@@ -129,15 +80,31 @@ const CreateListingPage = () => {
             </div>
           </div>
 
-          <div>
-            <label className="form-label">Property Type *</label>
-            <select className="input-field" {...register('propertyType', { required: 'Property type is required' })}>
-              <option value="">Select...</option>
-              <option value="Apartment">Apartment</option>
-              <option value="House">House</option>
-              <option value="Studio">Studio</option>
-            </select>
-            {errors.propertyType && <p className="form-error">{errors.propertyType.message}</p>}
+          <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="form-label">Price (F CFA) *</label>
+              <input
+                className="input-field"
+                type="number"
+                min="0"
+                placeholder="250 000"
+                {...register('price', {
+                  required: 'Price is required',
+                  min: { value: 0, message: 'Price must be positive' },
+                })}
+              />
+              {errors.price && <p className="form-error">{errors.price.message}</p>}
+            </div>
+            <div>
+              <label className="form-label">Property Type *</label>
+              <select className="input-field" {...register('propertyType', { required: 'Property type is required' })}>
+                <option value="">Select...</option>
+                <option value="Apartment">Apartment</option>
+                <option value="House">House</option>
+                <option value="Studio">Studio</option>
+              </select>
+              {errors.propertyType && <p className="form-error">{errors.propertyType.message}</p>}
+            </div>
           </div>
 
           <div>

@@ -40,16 +40,16 @@ const HomePage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8 bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl px-8 py-10 text-white">
-        <p className="text-blue-200 text-sm font-medium uppercase tracking-widest mb-2">
-          Cameroon & France
+      <div className="mb-8 bg-gradient-to-r from-purple-600 to-purple-800 rounded-2xl px-8 py-10 text-white">
+        <p className="text-purple-200 text-sm font-medium uppercase tracking-widest mb-2">
+          Cameroon
         </p>
         <h1 className="text-3xl sm:text-4xl font-bold mb-2">
           Find Your Next Property
         </h1>
-        <p className="text-blue-100 text-base max-w-xl">
-          Discover premium properties for rent and sale across Cameroon and France.
-          From Douala to Paris, your ideal home is here.
+        <p className="text-purple-100 text-base max-w-xl">
+          Discover the best properties for rent and sale across Cameroon.
+          From Douala to Yaoundé, your ideal home is here.
         </p>
       </div>
 
