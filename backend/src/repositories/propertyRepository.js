@@ -16,9 +16,10 @@ const updateById = (id, data) =>
 
 const deleteById = (id) => Property.findByIdAndDelete(id);
 
-const buildFilter = ({ city, minPrice, maxPrice, propertyType, listingType }) => {
+const buildFilter = ({ city, country, minPrice, maxPrice, propertyType, listingType }) => {
   const filter = {};
   if (city) filter.city = { $regex: city, $options: 'i' };
+  if (country) filter.country = { $regex: country, $options: 'i' };
   if (propertyType) filter.propertyType = propertyType;
   if (listingType) filter.listingType = listingType;
   if (minPrice !== undefined || maxPrice !== undefined) {

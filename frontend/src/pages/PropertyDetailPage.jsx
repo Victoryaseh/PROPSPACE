@@ -3,6 +3,7 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import api from '../api/axiosInstance';
 import { useAuth } from '../context/AuthContext';
 import Spinner from '../components/Spinner';
+import { formatPrice } from '../utils/currency';
 
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=800&q=80';
 
@@ -82,7 +83,7 @@ const PropertyDetailPage = () => {
             </div>
             <div className="text-right">
               <p className="text-2xl font-bold text-blue-600">
-                ${property.price.toLocaleString()}
+                {formatPrice(property.price, property.currency)}
                 {property.listingType === 'rent' && <span className="text-base text-gray-400 font-normal">/mo</span>}
               </p>
               <span className={`text-xs font-semibold px-2 py-1 rounded-full ${property.listingType === 'rent' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'}`}>

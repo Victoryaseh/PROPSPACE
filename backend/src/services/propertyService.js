@@ -18,7 +18,8 @@ const createProperty = async (userId, data) => {
   if (!title || !description || price === undefined || !city || !country || !propertyType || !listingType)
     throw { status: 400, message: 'All required fields must be provided' };
 
-  return propertyRepo.create({ title, description, price, city, country, propertyType, listingType, images, author: userId });
+  const { currency } = data;
+  return propertyRepo.create({ title, description, price, currency, city, country, propertyType, listingType, images, author: userId });
 };
 
 const updateProperty = async (userId, propertyId, data) => {
@@ -28,7 +29,7 @@ const updateProperty = async (userId, propertyId, data) => {
   if (property.author._id.toString() !== userId.toString())
     throw { status: 403, message: 'You are not authorized to update this listing' };
 
-  const allowed = ['title', 'description', 'price', 'city', 'country', 'propertyType', 'listingType', 'images'];
+  const allowed = ['title', 'description', 'price', 'currency', 'city', 'country', 'propertyType', 'listingType', 'images'];
   const updates = {};
   allowed.forEach((key) => {
     if (data[key] !== undefined) updates[key] = data[key];

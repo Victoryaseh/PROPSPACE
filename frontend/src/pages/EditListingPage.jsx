@@ -1,10 +1,15 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { useForm } from 'react-hook-form';
+import { useForm, useWatch } from 'react-hook-form';
 import api from '../api/axiosInstance';
 import { useAuth } from '../context/AuthContext';
 import InputField from '../components/InputField';
 import Spinner from '../components/Spinner';
+
+const CITIES = {
+  Cameroon: ['Douala', 'Yaoundé', 'Bafoussam', 'Kribi', 'Dschang', 'Limbe', 'Buea', 'Ngaoundéré', 'Bamenda', 'Garoua'],
+  France: ['Paris', 'Lyon', 'Marseille', 'Nice', 'Bordeaux', 'Aix-en-Provence', 'Toulouse', 'Strasbourg', 'Nantes', 'Lille'],
+};
 
 const EditListingPage = () => {
   const { id } = useParams();
@@ -14,7 +19,9 @@ const EditListingPage = () => {
   const [fetchError, setFetchError] = useState('');
   const [serverError, setServerError] = useState('');
 
-  const { register, handleSubmit, reset, formState: { errors, isSubmitting } } = useForm();
+  const { register, handleSubmit, reset, control, setValue, formState: { errors, isSubmitting } } = useForm();
+  const country = useWatch({ control, name: 'country' });
+  const cities = CITIES[country] || [];
 
   useEffect(() => {
     let cancelled = false;
@@ -22,15 +29,8 @@ const EditListingPage = () => {
       try {
         const { data } = await api.get(`/properties/${id}`);
         if (cancelled) return;
-
-        if (data.author?._id !== user?._id) {
-          navigate('/dashboard');
-          return;
-        }
-        reset({
-          ...data,
-          images: data.images?.join('\n') || '',
-        });
+        if (data.author?._id !== user?._id) { navigate('/dashboard'); return; }
+        reset({ ...data, images: data.images?.join('\n') || '' });
       } catch {
         if (!cancelled) setFetchError('Could not load the listing');
       } finally {
@@ -40,6 +40,11 @@ const EditListingPage = () => {
     fetch();
     return () => { cancelled = true; };
   }, [id, user, reset, navigate]);
+
+  const handleCountryChange = (e) => {
+    setValue('country', e.target.value);
+    setValue('city', '');
+  };
 
   const onSubmit = async (data) => {
     setServerError('');
@@ -90,8 +95,30 @@ const EditListingPage = () => {
           </div>
 
           <div className="grid grid-cols-2 gap-4">
+            <div>
+              <label className="form-label">Country *</label>
+              <select
+                className="input-field"
+                {...register('country', { required: 'Country is required' })}
+                onChange={handleCountryChange}
+              >
+                <option value="Cameroon">Cameroon</option>
+                <option value="France">France</option>
+              </select>
+            </div>
+            <div>
+              <label className="form-label">City *</label>
+              <select className="input-field" {...register('city', { required: 'City is required' })}>
+                <option value="">Select city...</option>
+                {cities.map((c) => <option key={c} value={c}>{c}</option>)}
+              </select>
+              {errors.city && <p className="form-error">{errors.city.message}</p>}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-3 gap-4">
             <InputField
-              label="Price ($) *"
+              label="Price *"
               type="number"
               min="0"
               error={errors.price?.message}
@@ -101,25 +128,20 @@ const EditListingPage = () => {
               })}
             />
             <div>
+              <label className="form-label">Currency *</label>
+              <select className="input-field" {...register('currency', { required: true })}>
+                <option value="XAF">XAF (CFA)</option>
+                <option value="EUR">EUR (€)</option>
+                <option value="USD">USD ($)</option>
+              </select>
+            </div>
+            <div>
               <label className="form-label">Listing Type *</label>
               <select className="input-field" {...register('listingType', { required: true })}>
                 <option value="rent">For Rent</option>
                 <option value="sale">For Sale</option>
               </select>
             </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <InputField
-              label="City *"
-              error={errors.city?.message}
-              {...register('city', { required: 'City is required' })}
-            />
-            <InputField
-              label="Country *"
-              error={errors.country?.message}
-              {...register('country', { required: 'Country is required' })}
-            />
           </div>
 
           <div>

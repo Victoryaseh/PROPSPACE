@@ -40,9 +40,17 @@ const HomePage = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Find Your Next Property</h1>
-        <p className="text-gray-500 mt-1">Browse thousands of listings for rent or sale</p>
+      <div className="mb-8 bg-gradient-to-r from-blue-600 to-blue-800 rounded-2xl px-8 py-10 text-white">
+        <p className="text-blue-200 text-sm font-medium uppercase tracking-widest mb-2">
+          Cameroon & France
+        </p>
+        <h1 className="text-3xl sm:text-4xl font-bold mb-2">
+          Find Your Next Property
+        </h1>
+        <p className="text-blue-100 text-base max-w-xl">
+          Discover premium properties for rent and sale across Cameroon and France.
+          From Douala to Paris, your ideal home is here.
+        </p>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
@@ -70,9 +78,12 @@ const HomePage = () => {
             </div>
           )}
           {!loading && !error && properties.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
-              {properties.map((p) => <PropertyCard key={p._id} property={p} />)}
-            </div>
+            <>
+              <p className="text-sm text-gray-500 mb-4">{properties.length} listing{properties.length !== 1 ? 's' : ''} found</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-5">
+                {properties.map((p) => <PropertyCard key={p._id} property={p} />)}
+              </div>
+            </>
           )}
         </div>
       </div>

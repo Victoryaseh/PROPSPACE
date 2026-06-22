@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import { formatPrice } from '../utils/currency';
 
 const PLACEHOLDER = 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?w=600&q=80';
 
@@ -30,7 +31,7 @@ const PropertyCard = ({ property }) => {
         <h3 className="font-semibold text-gray-900 truncate">{property.title}</h3>
         <p className="text-sm text-gray-500 mt-1">{property.city}, {property.country}</p>
         <p className="text-blue-600 font-bold mt-2 text-lg">
-          ${property.price.toLocaleString()}
+          {formatPrice(property.price, property.currency)}
           {property.listingType === 'rent' && <span className="text-gray-400 text-sm font-normal">/mo</span>}
         </p>
       </div>

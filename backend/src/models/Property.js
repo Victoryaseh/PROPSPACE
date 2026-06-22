@@ -38,6 +38,11 @@ const propertySchema = new mongoose.Schema(
       enum: ['rent', 'sale'],
       required: [true, 'Listing type is required'],
     },
+    currency: {
+      type: String,
+      enum: ['XAF', 'EUR', 'USD'],
+      default: 'XAF',
+    },
     images: {
       type: [String],
       default: [],
