@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import api from '../api/axiosInstance';
@@ -9,7 +9,35 @@ const CAMEROON_CITIES = ['Douala', 'Yaoundé', 'Bafoussam', 'Kribi', 'Dschang', 
 const CreateListingPage = () => {
   const navigate = useNavigate();
   const [serverError, setServerError] = useState('');
+  const [images, setImages] = useState([]);
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef(null);
+
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm();
+
+  const handleFileChange = async (e) => {
+    const files = Array.from(e.target.files);
+    if (!files.length) return;
+
+    setUploading(true);
+    try {
+      const formData = new FormData();
+      files.forEach((f) => formData.append('images', f));
+      const { data } = await api.post('/upload', formData, {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      });
+      setImages((prev) => [...prev, ...data.urls]);
+    } catch {
+      setServerError('Image upload failed. Please try again.');
+    } finally {
+      setUploading(false);
+      e.target.value = '';
+    }
+  };
+
+  const removeImage = (index) => {
+    setImages((prev) => prev.filter((_, i) => i !== index));
+  };
 
   const onSubmit = async (data) => {
     setServerError('');
@@ -19,7 +47,7 @@ const CreateListingPage = () => {
         price: Number(data.price),
         currency: 'XAF',
         country: 'Cameroon',
-        images: data.images ? data.images.split('\n').map((u) => u.trim()).filter(Boolean) : [],
+        images,
       };
       const { data: property } = await api.post('/properties', payload);
       navigate(`/properties/${property._id}`);
@@ -107,17 +135,58 @@ const CreateListingPage = () => {
             </div>
           </div>
 
+          {/* Image Upload */}
           <div>
-            <label className="form-label">Image URLs (one per line)</label>
-            <textarea
-              className="input-field min-h-[80px] resize-y"
-              placeholder="https://example.com/image1.jpg&#10;https://example.com/image2.jpg"
-              {...register('images')}
+            <label className="form-label">Property Images</label>
+
+            <div
+              onClick={() => fileInputRef.current?.click()}
+              className="border-2 border-dashed border-gray-300 hover:border-purple-400 rounded-xl p-6 text-center cursor-pointer transition-colors"
+            >
+              <div className="text-3xl mb-2">📁</div>
+              <p className="text-sm font-medium text-gray-700">Click to select images from your device</p>
+              <p className="text-xs text-gray-400 mt-1">PNG, JPG, WEBP — up to 5 MB each, max 10 images</p>
+              {uploading && <p className="text-xs text-purple-600 mt-2 font-medium">Uploading...</p>}
+            </div>
+
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              multiple
+              className="hidden"
+              onChange={handleFileChange}
             />
+
+            {images.length > 0 && (
+              <div className="grid grid-cols-3 gap-2 mt-3">
+                {images.map((url, i) => (
+                  <div key={i} className="relative group rounded-lg overflow-hidden h-24">
+                    <img
+                      src={url}
+                      alt={`preview-${i}`}
+                      className="w-full h-full object-cover"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => removeImage(i)}
+                      className="absolute top-1 right-1 bg-red-600 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      ×
+                    </button>
+                    {i === 0 && (
+                      <span className="absolute bottom-1 left-1 bg-purple-600 text-white text-xs px-1.5 py-0.5 rounded">
+                        Cover
+                      </span>
+                    )}
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="flex gap-3 pt-2">
-            <button type="submit" disabled={isSubmitting} className="btn-primary flex-1">
+            <button type="submit" disabled={isSubmitting || uploading} className="btn-primary flex-1">
               {isSubmitting ? 'Publishing...' : 'Publish Listing'}
             </button>
             <button type="button" onClick={() => navigate(-1)} className="btn-secondary flex-1">
